@@ -1,0 +1,385 @@
+<script>
+  const discountsContainer = `
+  <div style="background-color: white; padding: 10px; border-radius: 8px">
+    <span> Buy more and save </span>
+    <div style="border: 1px solid black; margin-top: 10px; padding: 10px">
+      <div style="display: flex">
+        <img
+          src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
+          width="60px"
+          height="60px"
+        />
+
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            margin-left: 10px;
+          "
+        >
+          <div style="display: flex; justify-content: space-between">
+            <span>Example T-Shirts</span>
+            <span style="text-decoration: line-through"> Rs. 10.00 </span>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <span style="font-size: 12px"> SMALL </span>
+            <span style="font-size: 14px"> Rs. 6.00 </span>
+          </div>
+        </div>
+      </div>
+
+      <hr style="margin-top: 15px; margin-bottom: 15px; border-top: 0px" />
+
+      <div style="display: flex">
+        <img
+          src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
+          width="60px"
+          height="60px"
+        />
+
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            margin-left: 10px;
+          "
+        >
+          <div style="display: flex; justify-content: space-between">
+            <span>Example T-Shirts</span>
+            <span style="text-decoration: line-through"> Rs. 10.00 </span>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <span style="font-size: 12px"> SMALL </span>
+            <span style="font-size: 14px"> Rs. 6.00 </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button
+      style="
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px 0px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        color: white;
+        background-color: green;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+      "
+    >
+      Grab this Deal
+    </button>
+  </div>
+  `;
+
+  const tooltipIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="18px" height="18px">
+    <path d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z"/>
+  </svg>`;
+
+  // Constants
+  const template_name = "{{template.name}}"; // Get Template Name
+  const DOMAIN_SHOPIFY_APP_APIs =
+    "https://c541-125-99-173-2.in.ngrok.io/api/store-front"; // Domain Node URL
+  const fetchNodeAPI = async (endPoint, options) =>
+    await fetch(`${DOMAIN_SHOPIFY_APP_APIs}${endPoint}`, options)
+      .then((res) => res.json())
+      .then((data) => data)
+      .catch((err) => err);
+  const fetchAPI = async (endPoint, options) =>
+    await fetch(endPoint, options)
+      .then((res) => res.json())
+      .then((data) => data)
+      .catch((err) => err);
+
+  // Get Payload on the bases of product handle
+  async function getPayloadOfProductHandle(handle) {
+    const data = await fetchAPI(`/products/${handle}.json`);
+    return data;
+  }
+
+  // append html string code in element
+  function appendHTML(html) {
+    // Append HTML
+    const parser = new DOMParser();
+    let doc = parser.parseFromString(html, "text/html");
+    return doc.body;
+  }
+
+  // Create Price Rule
+  async function createPriceRule(details) {
+    let options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    };
+
+    const price_rule = await fetchNodeAPI("/create-price-rule", options);
+    return price_rule;
+  }
+
+  // Delete Price Rule using PriceRuleID
+  async function deletePriceRuleByID(priceRule) {
+    await fetchNodeAPI(`/delete-price-rule?id=${priceRule.id}`);
+    return
+  }
+
+  // Get Price Rule using PriceRuleID
+  async function getPriceRuleByID(details){
+    const data = await fetchNodeAPI(`/get-price-rule?discountCode=${details.discountCode}`);
+    return data
+  }
+  
+  // Create Discount Code on the bases of Price Rule
+  async function craeteDiscountCode(priceRule) {
+    let options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({priceRule}),
+    };
+
+    const discount_code = await fetchNodeAPI("/create-discount-code", options);
+    return discount_code;
+  }
+
+  // Deleet Discount by DiscountCodeID
+  async function deleteDiscountCodeByID(discountCode){
+    await fetchNodeAPI(`/delete-discount-code?id=${discountCode.id}`);
+    return
+  }
+  
+  // 1. Add Tooltip Icon at All products - home, collection page
+  async function clickOnTooltipIcon(handle) {
+    const { product } = await getPayloadOfProductHandle(handle);
+    if (!product) return;
+
+    try {
+      const data = await fetchNodeAPI(
+        `/products/tooltips/tooltip?key=${product.id}`
+      );
+      if (data.message) return;
+
+      let _div = document.getElementById(`tooltip-container_${handle}`);
+      let _span_text = document.getElementById(
+        `tooltip-container-text_${handle}`
+      );
+      if (_span_text) {
+        _span_text.remove(); // Delete span tag
+      } else {
+        // create span tag and add
+        let _span_text = document.createElement("span");
+        _span_text.setAttribute("id", `tooltip-container-text_${handle}`);
+        _span_text.classList.add("tooltip-text");
+        _span_text.innerHTML = data.tooltip;
+
+        // Get Tooltip Conatiner and Add Span text
+        _div.append(_span_text);
+      }
+    } catch (error) {
+      console.log("Tooltip Error: ", error);
+      return;
+    }
+  }
+
+  function addTooltipInProducts() {
+    const links = document.querySelectorAll('a[href*="/products"]');
+
+    const temp_products_card = [];
+
+    // Remove duplicate <a> tag and add tooltip icon
+    for (let i = 0; i < links.length; i++) {
+      let handle = links[i].href.split("/");
+      handle = handle[handle.length - 1];
+      temp_products_card.push(handle);
+
+      let _div = document.createElement("div");
+      _div.setAttribute("id", `tooltip-container_${handle}`);
+      _div.classList.add("tooltip-container");
+      _div.addEventListener("click", () => clickOnTooltipIcon(handle), true);
+
+      _div.innerHTML = tooltipIcon;
+      links[i].parentNode.parentNode.parentNode.append(_div);
+    }
+  }
+
+  // 2. Customize Checkout Button at cart page
+  async function clickOnCheckoutButton(e,itemWithVolumeCode){    
+    e.preventDefault()
+    const data = await fetchAPI("/cart.json");
+    const itemsWithVolumeDiscount = await data?.items.filter((x) => x.properties.VOLUME===itemWithVolumeCode.VOLUME_CODE) || []
+
+    // Apply Discount
+    const priceRule = await getPriceRuleByID({discountCode:itemWithVolumeCode.VOLUME_CODE})
+    if(!priceRule.id){
+      console.log("Something's wrong, Checkout not work")
+      return
+    }
+
+    // Redirect to Shipping page
+    window.location.href = `/checkout?discount=${priceRule.title}`
+    
+  }
+  
+  async function customizeChechkoutButton() {
+    const data = await fetchAPI("/cart.json");
+    const findFirstVolumeDiscountCode = await data.items.filter((x) => x.properties.VOLUME)[0]
+
+    if(findFirstVolumeDiscountCode){
+      const checkoutButton = document.querySelector(
+        'button[type="submit"][name="checkout"]'
+      );
+      if (checkoutButton) {
+        checkoutButton.addEventListener("click",(e)=>clickOnCheckoutButton(e,{VOLUME_CODE:findFirstVolumeDiscountCode.properties.VOLUME}))
+      }
+    }
+  }
+
+  // 3. Apply Volume Discount for every Product
+  async function grabVolumeDeal(details) {
+    const {product, collections, discount} = details
+    
+    // create price rule
+    const _new_price_rule = await createPriceRule({
+      product, collections, discount
+    });
+    
+    if (!_new_price_rule.price_rule?.id){
+      console.log("Price Rule Not Created: ", _new_price_rule)
+      return
+    }
+
+    // create discount code
+    const _new_discount_code = await craeteDiscountCode(_new_price_rule.price_rule);
+    if(!_new_discount_code.id){
+      console.log("Discount Code Not Created, So we will delete price rule: ", _new_discount_code)
+      await deletePriceRuleByID(_new_price_rule.price_rule)
+      return
+    }
+
+    console.log(product)
+    // add "Discount Code" in product properties
+    let formData = {
+      items: [
+        {
+          id: product.variants[0].id,
+          quantity: 1,
+          properties: {
+            "VOLUME": _new_discount_code.code
+          }
+        },
+      ],
+    };
+
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    }
+    
+    const productPropertyAdd = await fetchAPI("/cart/add.js",options);
+    if(!productPropertyAdd?.items){
+      // delete price rule and discount code
+      await deletePriceRuleByID(_new_price_rule.price_rule)
+      await deleteDiscountCodeByID(_new_discount_code)
+    }
+
+    // Redirect to cart page
+    window.location.href = '{{ shop.url }}' + "/cart"
+  }
+
+  async function addVolumeDiscount() {
+    try {
+      // Get Product Details
+      const links = document.querySelectorAll('a[href*="/products"]');
+      const temp_products_handle = [];
+      for (let i = 0; i < links.length; i++) {
+        let handle = links[i].href.split("/");
+        handle = handle[handle.length - 1];
+        if (!temp_products_handle.includes(handle)) {
+          temp_products_handle.push(handle);
+        }
+      }
+
+      const productGandlePayload = await getPayloadOfProductHandle(
+        temp_products_handle[0]
+      );
+
+      let productDetails = {
+        product: productGandlePayload?.product || { id: "{{product.id}}" },
+        collections: [],
+      };
+
+      {% for collection in product.collections %}
+        productDetails.collections.push('{{ collection.id }}')
+      {% endfor %}
+
+      // Get Volume Discount Detail
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productDetails),
+      };
+
+      const _volume_discount = await fetchNodeAPI(`/discounts/volume`, options);
+      if (_volume_discount.error) return;
+
+      // Create Visit Deal
+      let _visitDiv = document.createElement("div");
+      _visitDiv.classList.add("volume-dicount-visit-wrapper");
+      _visitDiv.innerHTML = `Grab This Deal :: ${
+        _volume_discount.offer.applyOfferOn.filter((x) => x.status)[0].label
+      }, Options: ${_volume_discount.offer.quantityDiscounts.map(
+        (x) =>
+          `Buy: ${x.buy} and Get: ${x.discountType.value} ${x.discountType.suffix} OFF`
+      )}`;
+      _visitDiv.addEventListener("click", () =>
+        grabVolumeDeal({
+          ...productDetails,
+          discount:_volume_discount
+        })
+      );
+
+      // Add Visit Deal into Product Page
+      let _addToCartBtn = document.querySelector(
+        'button[type="submit"][name="add"]'
+      )?.parentNode;
+
+      if (_addToCartBtn) {
+        _addToCartBtn.append(_visitDiv);
+      }
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  }
+
+  console.log("===> ",template_name)
+  // Call the functions
+  if (["index", "collection"].includes(template_name)) {
+    addTooltipInProducts();
+  } else if (template_name === "cart") {
+    // Customize Checkout button
+    customizeChechkoutButton();
+  } else if (template_name === "product") {
+    // Apply Volume Discount
+    addVolumeDiscount();
+  } else {
+    console.log("No Pages.");
+  }
+
+</script>

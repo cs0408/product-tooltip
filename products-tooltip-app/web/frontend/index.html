@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Ensures that the UI is properly scaled in the Shopify Mobile app -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script type="module">
+      if (!import.meta.env || !import.meta.env.PROD) {
+        // Because the base HTML is rendered in the server side, we need to manually embed the code to enable HMR in our
+        // code, so that the vite server is properly enabled to run HMR
+        const script = document.createElement("script");
+        script.setAttribute("type", "module");
+        script.setAttribute("src", "./dev_embed.js");
+        document.getElementsByTagName("head")[0].append(script);
+      }
+    </script>
+  </head>
+  <body>
+    <!-- <div
+      style="
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translate(-50%);
+        color: white;
+      "
+    >
+      <div
+        style="
+          background-color: black;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 15px;
+          border-radius: 12px;
+        "
+      >
+        <span>Something's wrong. Try again later!!</span>
+        <svg
+          class="svg-icon"
+          style="
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+            fill: currentColor;
+            overflow: hidden;
+            margin-left: 10px;
+            cursor: pointer;
+          "
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M810.65984 170.65984q18.3296 0 30.49472 12.16512t12.16512 30.49472q0 18.00192-12.32896 30.33088l-268.67712 268.32896 268.67712 268.32896q12.32896 12.32896 12.32896 30.33088 0 18.3296-12.16512 30.49472t-30.49472 12.16512q-18.00192 0-30.33088-12.32896l-268.32896-268.67712-268.32896 268.67712q-12.32896 12.32896-30.33088 12.32896-18.3296 0-30.49472-12.16512t-12.16512-30.49472q0-18.00192 12.32896-30.33088l268.67712-268.32896-268.67712-268.32896q-12.32896-12.32896-12.32896-30.33088 0-18.3296 12.16512-30.49472t30.49472-12.16512q18.00192 0 30.33088 12.32896l268.32896 268.67712 268.32896-268.67712q12.32896-12.32896 30.33088-12.32896z"
+          />
+        </svg>
+      </div>
+      <div
+        style="
+          background-color: black;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 15px;
+          border-radius: 12px;
+          margin-top: 10px;
+        "
+      >
+        <span>Something's wrong. Try again later!!</span>
+        <svg
+          class="svg-icon"
+          style="
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+            fill: currentColor;
+            overflow: hidden;
+            margin-left: 10px;
+            cursor: pointer;
+          "
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M810.65984 170.65984q18.3296 0 30.49472 12.16512t12.16512 30.49472q0 18.00192-12.32896 30.33088l-268.67712 268.32896 268.67712 268.32896q12.32896 12.32896 12.32896 30.33088 0 18.3296-12.16512 30.49472t-30.49472 12.16512q-18.00192 0-30.33088-12.32896l-268.32896-268.67712-268.32896 268.67712q-12.32896 12.32896-30.33088 12.32896-18.3296 0-30.49472-12.16512t-12.16512-30.49472q0-18.00192 12.32896-30.33088l268.67712-268.32896-268.67712-268.32896q-12.32896-12.32896-12.32896-30.33088 0-18.3296 12.16512-30.49472t30.49472-12.16512q18.00192 0 30.33088 12.32896l268.32896 268.67712 268.32896-268.67712q12.32896-12.32896 30.33088-12.32896z"
+          />
+        </svg>
+      </div>
+    </div> -->
+    <!-- <div style="background-color: white; padding: 10px; border-radius: 8px">
+      <span> Buy more and save </span>
+      <div style="border: 1px solid black; margin-top: 10px; padding: 10px">
+        <div style="display: flex">
+          <img
+            src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
+            width="60px"
+            height="60px"
+          />
+
+          <div
+            style="
+              flex: 1;
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+              margin-left: 10px;
+            "
+          >
+            <div style="display: flex; justify-content: space-between">
+              <span>Example T-Shirts</span>
+              <span style="text-decoration: line-through"> Rs. 10.00 </span>
+            </div>
+            <div style="display: flex; justify-content: space-between">
+              <span style="font-size: 12px"> SMALL </span>
+              <span style="font-size: 14px"> Rs. 6.00 </span>
+            </div>
+          </div>
+        </div>
+
+        <hr style="margin-top: 15px; margin-bottom: 15px; border-top: 0px" />
+
+        <div style="display: flex">
+          <img
+            src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
+            width="60px"
+            height="60px"
+          />
+
+          <div
+            style="
+              flex: 1;
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+              margin-left: 10px;
+            "
+          >
+            <div style="display: flex; justify-content: space-between">
+              <span>Example T-Shirts</span>
+              <span style="text-decoration: line-through"> Rs. 10.00 </span>
+            </div>
+            <div style="display: flex; justify-content: space-between">
+              <span style="font-size: 12px"> SMALL </span>
+              <span style="font-size: 14px"> Rs. 6.00 </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        style="
+          margin-top: 20px;
+          width: 100%;
+          padding: 10px 0px;
+          border-radius: 10px;
+          border: none;
+          cursor: pointer;
+          color: white;
+          background-color: #5f72f3;
+          text-transform: uppercase;
+          font-weight: bold;
+          letter-spacing: 1px;
+        "
+      >
+        Grab this Deal
+      </button>
+    </div> -->
+    <div id="app"><!--index.jsx injects App.jsx here--></div>
+    <script type="module" src="/index.jsx"></script>
+  </body>
+</html>
